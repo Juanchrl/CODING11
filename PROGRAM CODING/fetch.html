@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch</title>
+    <style>
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            flex-direction: row;
+        }
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #000;
+            padding: 40px;
+            position: relative;
+            background-color: #d7d6d6f8;
+        }
+        .content img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .nav-button {
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <h1 id="title"></h1>
+            <img src="realloading.gif" alt="Loading..." class="loading" id="loading">
+            <img src="" alt="" id="image">
+            <p id="description"></p>
+            <div class="navigation">
+                <span id="left" class="nav-button">◀</span>
+                <span id="right" class="nav-button">▶</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        function updateContent() {
+            let pokemon = data;
+            document.getElementById("title").innerHTML = pokemon.name;
+            document.getElementById("image").src = pokemon.sprites.front_default;
+            document.getElementById("image").style.display = 'block';
+            document.getElementById("loading").style.display = 'none';
+        }
+
+        let data = {};
+        let currentIndex = 1;
+
+        async function loadPokemon() {
+            try {
+                document.getElementById("image").style.display = 'none';
+                document.getElementById("loading").style.display = 'block';
+                let result = await fetch(`https://pokeapi.co/api/v2/pokemon/${currentIndex}`);
+                data = await result.json();
+                updateContent();
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        loadPokemon();
+
+        document.getElementById("right").addEventListener('click', () => {
+            if (currentIndex < 100) {
+                currentIndex++;
+                loadPokemon();
+            }
+        });
+
+        document.getElementById("left").addEventListener('click', () => {
+            if (currentIndex > 1) {
+                currentIndex--;
+                loadPokemon();
+            }
+        });
+    </script>
+</body>
+</html>
